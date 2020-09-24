@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApp.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp
 {
@@ -30,6 +31,10 @@ namespace WebApp
                 "ConnectionStrings:ProductConnection"]);
                 opts.EnableSensitiveDataLogging(true);
             });
+            services.AddControllers();
+            services.Configure<JsonOptions>(opts => {
+                opts.JsonSerializerOptions.IgnoreNullValues = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +47,8 @@ namespace WebApp
                 endpoints.MapGet("/", async context => {
                     await context.Response.WriteAsync("Hello World!");
                 });
+                // endpoints.MapWebService();
+                endpoints.MapControllers();
             });
             SeedData.SeedDatabase(context);
         }
